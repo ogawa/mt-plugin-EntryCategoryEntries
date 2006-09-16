@@ -12,7 +12,7 @@ package MT::Plugin::EntryCategoryEntries;
 use strict;
 use base 'MT::Plugin';
 use vars qw($VERSION);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use MT;
 use MT::Template::Context;
@@ -21,7 +21,7 @@ use MT::Entry;
 my $plugin = MT::Plugin::EntryCategoryEntries->new({
     name => 'Entry Category Entries',
     description => "A plugin for listing entries included in the primary category of the current entry",
-    doc_link => 'http://as-is.net/hacks/2005/10/entry_category_entries_plugin.html',
+    doc_link => 'http://code.as-is.net/wiki/EntryCategoryEntries_Plugin',
     author_name => 'Hirotaka Ogawa',
     author_link => 'http://profile.typekey.com/ogawa/',
     version => $VERSION,
@@ -34,7 +34,7 @@ sub entries {
     my $entry = $ctx->stash('entry')
 	or return $ctx->_no_entry_error('MT' . $ctx->stash('tag'));
     my $cat = $entry->category or return '';
-    $args->{category} = ['OR', $cat];
+    $args->{category} = MT->version_number > 3.2 ? ['OR',[$cat]] : ['OR',$cat];
     MT::Template::Context::_hdlr_entries(@_);
 }
 
